@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>हिंदी टेक्स्ट अरेंजर</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Kalam', cursive;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: 'Kalam', cursive;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      min-height: 200px;
+      border: 1px solid #ddd;
+      font-family: 'Kalam', cursive;
+    }
+    #copyBtn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      font-family: 'Kalam', cursive;
+    }
+    #copyBtn:hover {
+      background-color: #218838;
+    }
+    @media (max-width: 600px) {
+      textarea, button {
+        font-size: 14px;
+      }
+      #copyBtn {
+        font-size: 14px;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center">हिंदी टेक्स्ट अरेंजर</h2>
+    <p>कृपया अपनी अनुवादित कहानी नीचे चिपकाएं:</p>
+    <textarea id="input" rows="8" placeholder="यहाँ हिंदी टेक्स्ट पेस्ट करें..."></textarea>
+    <button onclick="arrangeText()">टेक्स्ट अरेंज करें</button>
+    <h3>संगठित कहानी:</h3>
+    <div id="output" contenteditable="true"></div>
+    <button id="copyBtn">आउटपुट कॉपी करें</button>
+  </div>
+
+  <script>
+    function arrangeText() {
+      const input = document.getElementById('input').value;
+      let cleaned = input.replace(/\s+/g, ' ').trim();
+      let sentences = cleaned.split(/(?<=।|\?|!)/);
+
+      let arranged = sentences.map(sentence => {
+        sentence = sentence.trim();
+        if (/^(["“‘])(.*?)(["”’])$/.test(sentence) || sentence.includes(' कहा ') || sentence.includes(' ने कहा')) {
+          return '"' + sentence.replace(/^"|“|‘|"|”|’$/g, '').trim() + '"';
+        } else {
+          return sentence;
+        }
+      }).join('\n');
+
+      document.getElementById('output').innerText = arranged;
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      const output = document.getElementById('output');
+      const range = document.createRange();
+      range.selectNodeContents(output);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      try {
+        document.execCommand('copy');
+        alert('आउटपुट कॉपी हो गया है!');
+        selection.removeAllRanges();
+      } catch (err) {
+        alert('कॉपी करने में समस्या हुई।');
+      }
+    });
+  </script>
+</body>
+</html>
